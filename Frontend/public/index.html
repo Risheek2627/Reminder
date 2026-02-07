@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Revision Reminder App</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow-x: hidden;
+      }
+
+      /* Animated gradient background */
+      .bg-animated {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        z-index: -2;
+      }
+
+      /* Floating shapes */
+      .floating-shapes {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .shape {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        animation: float 25s infinite ease-in-out;
+      }
+
+      .shape:nth-child(1) {
+        width: 400px;
+        height: 400px;
+        top: -200px;
+        left: -200px;
+      }
+
+      .shape:nth-child(2) {
+        width: 300px;
+        height: 300px;
+        top: 30%;
+        right: -150px;
+        animation-delay: 5s;
+      }
+
+      .shape:nth-child(3) {
+        width: 350px;
+        height: 350px;
+        bottom: -150px;
+        left: 20%;
+        animation-delay: 8s;
+      }
+
+      .shape:nth-child(4) {
+        width: 250px;
+        height: 250px;
+        top: 60%;
+        left: -100px;
+        animation-delay: 3s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        50% {
+          transform: translate(50px, -80px) rotate(180deg);
+        }
+      }
+
+      /* ========== NAVBAR ========== */
+      .navbar-custom {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .navbar-brand-custom {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .navbar-toggler {
+        border: 2px solid #667eea;
+        padding: 0.5rem 0.75rem;
+      }
+
+      .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      }
+
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
+
+      .nav-link-custom {
+        color: #667eea !important;
+        font-weight: 600;
+        margin: 0 10px;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 0;
+      }
+
+      .nav-link-custom::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link-custom:hover::after {
+        width: 100%;
+      }
+
+      .btn-nav {
+        padding: 8px 25px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin: 5px;
+        transition: all 0.3s ease;
+        display: inline-block;
+      }
+
+      .btn-nav-login {
+        background: transparent;
+        border: 2px solid #667eea;
+        color: #667eea;
+      }
+
+      .btn-nav-login:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-nav-register {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-nav-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+      }
+
+      /* ========== HERO SECTION ========== */
+      .hero {
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 100px 20px 80px;
+      }
+
+      .hero-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 30px;
+        padding: 50px 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        max-width: 700px;
+        text-align: center;
+        animation: fadeInUp 0.8s ease;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+      }
+
+      .hero .subtitle {
+        color: #666;
+        margin: 0 0 2rem;
+        font-size: 1.2rem;
+        line-height: 1.6;
+      }
+
+      .btn-hero {
+        padding: 16px 45px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin: 8px;
+        transition: all 0.3s ease;
+        display: inline-block;
+      }
+
+      .btn-primary-custom {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-primary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+        color: white;
+      }
+
+      .btn-outline-custom {
+        border: 2px solid #667eea;
+        color: #667eea;
+        background: transparent;
+      }
+
+      .btn-outline-custom:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      /* ========== SECTIONS ========== */
+      .section {
+        padding: 80px 20px;
+        position: relative;
+      }
+
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        color: white;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Feature Cards */
+      .feature-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        height: 100%;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .feature-card .icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: block;
+      }
+
+      .feature-card h5 {
+        color: white;
+        font-weight: 700;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+
+      .feature-card p {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      /* How It Works Section */
+      .how-it-works-section {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 80px 20px;
+      }
+
+      .how-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border: none;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        height: 100%;
+      }
+
+      .how-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+      }
+
+      .how-card .icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: block;
+      }
+
+      .how-card h5 {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+
+      .how-card p {
+        color: #666;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      /* Why Section */
+      .why-section {
+        text-align: center;
+      }
+
+      .why-content {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 25px;
+        padding: 3rem 2.5rem;
+        max-width: 800px;
+        margin: 0 auto;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .why-content p {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1.25rem;
+        line-height: 1.8;
+        margin: 0;
+      }
+
+      /* ========== FOOTER ========== */
+      footer {
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 40px 20px;
+        color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      footer small {
+        font-size: 1rem;
+      }
+
+      /* ========== RESPONSIVE ========== */
+      @media (max-width: 991px) {
+        .navbar-nav {
+          padding: 1rem 0;
+        }
+
+        .nav-link-custom {
+          margin: 0.5rem 0;
+        }
+
+        .btn-nav {
+          width: 100%;
+          margin: 0.5rem 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .navbar-brand-custom {
+          font-size: 1.3rem;
+        }
+
+        .hero {
+          min-height: auto;
+          padding: 80px 15px 60px;
+        }
+
+        .hero h1 {
+          font-size: 2.2rem;
+        }
+
+        .hero .subtitle {
+          font-size: 1.05rem;
+        }
+
+        .hero-card {
+          padding: 35px 25px;
+          border-radius: 20px;
+        }
+
+        .btn-hero {
+          padding: 14px 35px;
+          font-size: 1rem;
+          width: 100%;
+          margin: 5px 0;
+        }
+
+        .section {
+          padding: 60px 15px;
+        }
+
+        .section-title {
+          font-size: 2rem;
+          margin-bottom: 2rem;
+        }
+
+        .feature-card,
+        .how-card {
+          margin-bottom: 1.5rem;
+        }
+
+        .feature-card .icon,
+        .how-card .icon {
+          font-size: 3rem;
+        }
+
+        .feature-card h5,
+        .how-card h5 {
+          font-size: 1.25rem;
+        }
+
+        .feature-card p,
+        .how-card p {
+          font-size: 1rem;
+        }
+
+        .why-content {
+          padding: 2rem 1.5rem;
+        }
+
+        .why-content p {
+          font-size: 1.1rem;
+        }
+
+        .how-it-works-section {
+          padding: 60px 15px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .navbar-brand-custom {
+          font-size: 1.1rem;
+        }
+
+        .hero h1 {
+          font-size: 1.8rem;
+        }
+
+        .hero .subtitle {
+          font-size: 0.95rem;
+        }
+
+        .hero-card {
+          padding: 30px 20px;
+        }
+
+        .section-title {
+          font-size: 1.75rem;
+        }
+
+        .feature-card,
+        .how-card {
+          padding: 2rem 1.5rem;
+        }
+
+        .why-content {
+          padding: 1.5rem 1rem;
+        }
+
+        .why-content p {
+          font-size: 1rem;
+        }
+
+        footer small {
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+
+    <!-- Auto redirect if logged in -->
+    <script>
+      const token = localStorage.getItem("token");
+      if (token) {
+        window.location.href = "dashboard.html";
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- Background -->
+    <div class="bg-animated"></div>
+
+    <!-- Floating shapes -->
+    <div class="floating-shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+      <div class="container">
+        <a class="navbar-brand navbar-brand-custom" href="#home">
+          📚 Revision Reminder
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav align-items-lg-center">
+            <li class="nav-item">
+              <a class="nav-link nav-link-custom" href="#features">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-custom" href="#how-it-works"
+                >How It Works</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-custom" href="#why">Why Us</a>
+            </li>
+            <li class="nav-item mt-lg-0 mt-3">
+              <a href="login.html" class="btn btn-nav btn-nav-login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a href="register.html" class="btn btn-nav btn-nav-register"
+                >Register</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ========== HERO SECTION ========== -->
+    <section class="hero" id="home">
+      <div class="hero-card">
+        <h1>📚 Revision Reminder System</h1>
+        <p class="subtitle">
+          Smart revision scheduling so you never forget what you learn. Lock
+          knowledge into long-term memory with science-backed spaced repetition.
+        </p>
+
+        <div>
+          <a href="login.html" class="btn btn-hero btn-primary-custom">
+            Get Started
+          </a>
+          <a href="#features" class="btn btn-hero btn-outline-custom">
+            Learn More
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== WHO IS THIS FOR ========== -->
+    <section class="section text-center" id="features">
+      <div class="container">
+        <h3 class="section-title">Who Is This For?</h3>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="feature-card">
+              <span class="icon">🎓</span>
+              <h5>Students</h5>
+              <p>
+                Perfect for school, college, and competitive exam preparation.
+                Stay ahead with automated revision schedules.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card">
+              <span class="icon">💻</span>
+              <h5>Self Learners</h5>
+              <p>
+                Learning programming, AI, design, or any new skill? Never forget
+                what you've studied with smart reminders.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card">
+              <span class="icon">📈</span>
+              <h5>Professionals</h5>
+              <p>
+                Keep your skills sharp. Revise important concepts without manual
+                planning or tracking.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== HOW IT WORKS ========== -->
+    <section class="how-it-works-section" id="how-it-works">
+      <div class="container">
+        <h3 class="section-title text-center text-white">How It Works</h3>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="how-card text-center">
+              <span class="icon">➕</span>
+              <h5>Add Topic</h5>
+              <p>
+                Simply add what you studied today. Quick and easy topic entry
+                with no hassle.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="how-card text-center">
+              <span class="icon">⏰</span>
+              <h5>Auto Schedule</h5>
+              <p>
+                We automatically schedule 4-day and 7-day revisions using proven
+                spaced repetition techniques.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="how-card text-center">
+              <span class="icon">📩</span>
+              <h5>Get Reminded</h5>
+              <p>
+                Receive timely email reminders at the perfect moment to maximize
+                retention.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== WHY THIS APP ========== -->
+    <section class="section why-section" id="why">
+      <div class="container">
+        <h3 class="section-title">Why Revision Reminder?</h3>
+        <div class="why-content">
+          <p>
+            Studies show that most people forget 70% of what they learn within
+            just a few days. This app uses scientifically-proven spaced
+            repetition to help you lock knowledge into long-term memory and
+            actually remember what you study.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+      <div class="container">
+        <p class="footer-text">
+          Built with <span class="heart">❤️</span> by
+          <span class="highlight">Student</span> for
+          <span class="highlight">Students</span>
+        </p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
