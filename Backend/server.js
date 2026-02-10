@@ -1,5 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
+require("./config/redis");
+console.log("Redis>>>>>url : ", process.env.REDIS_URL);
 require("./worker/reminderWorker");
 
 const express = require("express");
