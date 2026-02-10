@@ -16,12 +16,12 @@ exports.addTopic = async (req, res) => {
     const today = new Date();
 
     const day4 = new Date(today);
-    day4.setSeconds(today.getSeconds() + 30);
-    // day4.setDate(today.getDate() + 4);
+    // day4.setSeconds(today.getSeconds() + 30);
+    day4.setDate(today.getDate() + 4);
 
     const day7 = new Date(today);
-    day7.setSeconds(today.getSeconds() + 60);
-    // day7.setDate(today.getDate() + 7);
+    // day7.setSeconds(today.getSeconds() + 60);
+    day7.setDate(today.getDate() + 7);
 
     const topic = await Topic.create({
       title,
